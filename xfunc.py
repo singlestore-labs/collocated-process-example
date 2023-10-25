@@ -54,7 +54,10 @@ def handle_request(connection, client_address):
     name = msg
     print("Calling function:", name)
 
-    # 
+    # Two file descriptors are transferred to us from the database via the
+    # `sendmsg` protocol.  These are for reading the input rows and writing
+    # the output rows, respectively.
+    #
     fd0, fd1 = struct.unpack("<ii", ancdata[0][2])
     ifile = os.fdopen(fd0, "rb")
     ofile = os.fdopen(fd1, "wb")
