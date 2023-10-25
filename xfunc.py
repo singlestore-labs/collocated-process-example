@@ -90,20 +90,28 @@ def handle_request(connection, client_address):
         response_size = 0
         ofile.seek(0)
         while cursor < length:
-            # Read the following metadata for this row, respectively:
-            #   Row ID:        uint64
-            #   Is Null?:      byte (0=false, 1=true)
-            #   Value Length:  uint64
+            # Read the row's ID (uint64).
             #
             row_id = struct.unpack("<q", mem.read(8))[0]
             cursor += 8
+
+            # Each field has two parts:
+            #   Is Null?:      byte (0=false, 1=true)
+            #   Value:
+            #      uint64/bytes - for string types (length-prefixed)
+            #      int64        - for integer types
+            #      double       - for floating point types
+            #
+            # In this example, we are only dealing with strings, so we will
+            # read the 64-bit length first and then the actual string itself.
+            #
+            # We are also only dealing with one field.  If there were more,
+            # we would wrap this next part in a loop.
+            #
             row_isnull = struct.unpack("<B", mem.read(1))[0]
             cursor += 1
             row_len = struct.unpack("<q", mem.read(8))[0]
             cursor += 8
-
-            # Read the actual value for this row.
-            #
             row_value = mem.read(row_len)
             cursor += row_len
             print("    Value: {}".format(row_value))
