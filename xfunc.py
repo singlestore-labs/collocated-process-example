@@ -62,7 +62,7 @@ def handle_request(connection, client_address):
     ifile = os.fdopen(fd0, "rb")
     ofile = os.fdopen(fd1, "wb")
 
-    # Not sure if this loop will ever be executed more than once.
+    # Keep receiving data on this socket until we run out.
     #
     while True:
         # Read in the length of this row, a uint64.  No data means we're done
