@@ -2,6 +2,8 @@
 
 ## Summary
 
+**Attention**: The code in this repository is intended for experimental use only and is not fully tested, documented, or supported by SingleStore. Visit the [SingleStore Forums](https://www.singlestore.com/forum/) to ask questions about this repository.
+
 This is a simple Python program that illustrates a SingleStore collocated
 process using the binary protocol (via Unix sockets and shared memory) and the
 efficient ROWDAT_1 format.
