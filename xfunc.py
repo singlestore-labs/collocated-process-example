@@ -65,13 +65,13 @@ def handle_request(connection, client_address):
     # Keep receiving data on this socket until we run out.
     #
     while True:
-        # Read in the length of this row, a uint64.  No data means we're done
+        # Read in the length of this batch, a uint64.  No data means we're done
         # receiving.
         #
-        buf = connection.recv(8)
-        if len(buf) == 0:
+        recvd = connection.recv(8)
+        if len(recvd) == 0:
             break
-        length = struct.unpack("<q", buf)[0]
+        length = struct.unpack("<q", recvd)[0]
         if length == 0:
             break
 
@@ -88,6 +88,7 @@ def handle_request(connection, client_address):
         #
         cursor = 0
         response_size = 0
+        ofile.truncate(max(128*1024, response_size))
         ofile.seek(0)
         while cursor < length:
             # Read the row's ID (uint64).
