@@ -68,11 +68,15 @@ def handle_request(connection, client_address):
         # Read in the length of this batch, a uint64.  No data means we're done
         # receiving.
         #
-        recvd = connection.recv(8)
-        if len(recvd) == 0:
-            break
-        length = struct.unpack("<q", recvd)[0]
-        if length == 0:
+        connection.settimeout(5)
+        try:
+            recvd = connection.recv(8)
+            if len(recvd) == 0:
+                break
+            length = struct.unpack("<q", recvd)[0]
+            if length == 0:
+                break
+        except socket.timeout:
             break
 
         # Map in the input shared memory segment from the fd we received via
